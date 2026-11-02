@@ -1,0 +1,257 @@
+# ==========================================================================
+#  exp.yml - full working application.yml for Lavalink + Tunnel 1.3.0
+#  Plugin: com.github.ALLAY-XD-20:Tunnel:1.3.0 (JitPack)      Tunnel by Pawan
+#
+#  Copy this file to your Lavalink folder as application.yml, then change:
+#    - lavalink.server.password
+#  You do NOT add any node. Tunnel has its own nodes built in: users just search
+#  (scsearch:, ytsearch:, spsearch: ...) and Tunnel gets all data from its nodes.
+# ==========================================================================
+
+server:
+  port: 4010
+  address: 0.0.0.0
+  http2:
+    enabled: false
+
+# ---------------------------------------------------------------- Tunnel settings
+plugins:
+  tunnel:
+    useDefaultNodes: true          # use the nodes built into the plugin (leave true, users never add their own)
+    refreshSeconds: 60             # how often provider lists and health are re-fetched from every node
+    requestTimeoutSeconds: 15
+    searchResults: 5               # how many search results are resolved
+    maxPlaylistTracks: 100
+    fallbackSearch: "ytsearch:"    # used if a track URL can't be played here. "" turns it off
+
+    # Search every node at the same time and merge the results. The same song found on
+    # two nodes is added only once (matched by ISRC, link, or title + length).
+    multiNode: true
+    maxSearchNodes: 0              # 0 = ask all nodes that have the source
+
+    # A normal search like  scsearch:Alan Walker Faded  (no "tunnel:" in front) is answered by
+    # Tunnel's nodes, then the track is played on THIS server.
+    interceptSearch: true
+    exposeSources: true            # list all sources in /v4/info (sourceManagers), like a normal Lavalink
+    localFallback: true            # if the nodes fail, this server's own sources try the search
+
+    # Source switches. ALL sources are ON; set false to turn one off.
+    # Live toggle without restart: POST /v4/tunnel/sources/{id}/enable | /disable
+    sources:
+      http: true
+      tts: true
+      flowerytts: true
+      getyarn: true
+      clypit: true
+      genius: true
+      rss: true
+      abs: true
+      youtube: true
+      soundcloud: true
+      spotify: true
+      applemusic: true
+      deezer: true
+      tidal: true
+      qobuz: true
+      yandexmusic: true
+      vkmusic: true
+      jiosaavn: true
+      bandcamp: true
+      mixcloud: true
+      audiomack: true
+      pandora: true
+      amazonmusic: true
+      napster: true
+      anghami: true
+      gaana: true
+      wynk: true
+      hungama: true
+      boomplay: true
+      audius: true
+      lastfm: true
+      shazam: true
+      beatport: true
+      traxsource: true
+      reverbnation: true
+      datpiff: true
+      audioboom: true
+      hearthis: true
+      jamendo: true
+      freemusicarchive: true
+      internetarchive: true
+      ocremix: true
+      bandlab: true
+      spinrilla: true
+      ccmixter: true
+      soundclick: true
+      newgrounds: true
+      siriusxm: true
+      netease: true
+      qqmusic: true
+      kugou: true
+      kuwo: true
+      melon: true
+      genie: true
+      bugs: true
+      zingmp3: true
+      nhaccuatui: true
+      joox: true
+      kkbox: true
+      linemusic: true
+      awa: true
+      zvuk: true
+      twitch: true
+      vimeo: true
+      dailymotion: true
+      facebook: true
+      instagram: true
+      tiktok: true
+      twitter: true
+      reddit: true
+      telegram: true
+      odysee: true
+      rumble: true
+      tumblr: true
+      pinterest: true
+      snapchat: true
+      kick: true
+      streamable: true
+      imgur: true
+      ted: true
+      vevo: true
+      youku: true
+      iqiyi: true
+      rutube: true
+      okru: true
+      weibo: true
+      douyin: true
+      naver: true
+      bilibili: true
+      nicovideo: true
+      arte: true
+      bbc: true
+      npr: true
+      applepodcasts: true
+      podbean: true
+      anchor: true
+      libsyn: true
+      buzzsprout: true
+      acast: true
+      iheart: true
+      tunein: true
+      googledrive: true
+      dropbox: true
+      onedrive: true
+      githubraw: true
+      discordcdn: true
+      catbox: true
+      vocaroo: true
+      mediafire: true
+      mega: true
+      yandexdisk: true
+      gofile: true
+
+    # OPTIONAL extra nodes. Normal users leave this empty: the built-in nodes are used.
+    nodes: []
+    #  - name: my-node
+    #    host: lava.example.com
+    #    port: 2333
+    #    password: "youshallnotpass"
+    #    secure: false
+    #    priority: 10
+    #    enabled: true
+
+    # Advanced Search Driver (plain-text searches and ISRC codes)
+    asd:
+      enabled: true
+      mode: merge                  # merge = search several providers at once, first = stop at the first hit
+      sources: [ytsearch, scsearch, spsearch, dzsearch, amsearch, ytmsearch, tdsearch, qbsearch, jssearch, ymsearch, bcsearch, pdsearch, gnsearch, adsearch, mcsearch, audiomacksearch, neteasesearch, vmsearch, twsearch]
+      maxProviders: 3
+      minScore: 0.2
+      timeoutSeconds: 20
+
+    # Auto-update from JitPack: github.com/ALLAY-XD-20/Tunnel -> latest release tag
+    autoUpdate:
+      enabled: true
+      source: jitpack
+      owner: ALLAY-XD-20
+      repo: Tunnel
+      artifact: ""                 # empty = Tunnel (same as repo for JitPack)
+      checkIntervalMinutes: 60
+      deleteOldVersions: true      # delete the old Tunnel jar after an update
+      pluginsDir: "./plugins"      # must match lavalink.pluginsDir below
+      configFile: "./application.yml"    # full path if needed, e.g. /home/container/application.yml
+      updateConfigFile: true       # rewrites the Tunnel version line below (1.3.0 -> new version)
+      restartAfterUpdate: false    # true = Lavalink exits after an update (your panel/systemd/Docker must start it again)
+      restartDelaySeconds: 60
+
+# ---------------------------------------------------------------- Lavalink
+lavalink:
+  plugins:
+    # Tunnel. The auto-updater changes this version when a new release is out.
+    - dependency: "com.github.ALLAY-XD-20:Tunnel:1.3.0"
+      repository: "https://jitpack.io"
+    # Add your other plugins here (youtube-source, LavaSrc, ...)
+    # Tunnel plays the final track URL on THIS server, so it needs the sources (like YouTube) itself.
+  pluginsDir: "./plugins"
+
+  server:
+    password: "tunnel"             # CHANGE (clients send this in the Authorization header)
+    sources:
+      youtube: true                # set to false if you use the youtube-source plugin
+      bandcamp: true
+      soundcloud: true
+      twitch: true
+      vimeo: true
+      nico: true
+      http: true                   # warning: without a proxy this can expose your server's IP
+      local: false
+    filters:
+      volume: true
+      equalizer: true
+      karaoke: true
+      timescale: true
+      tremolo: true
+      vibrato: true
+      distortion: true
+      rotation: true
+      channelMix: true
+      lowPass: true
+    bufferDurationMs: 400
+    frameBufferDurationMs: 5000
+    opusEncodingQuality: 10
+    resamplingQuality: LOW
+    trackStuckThresholdMs: 10000
+    useSeekGhosting: true
+    youtubePlaylistLoadLimit: 6
+    playerUpdateInterval: 5
+    youtubeSearchEnabled: true
+    soundcloudSearchEnabled: true
+    gc-warnings: true
+
+metrics:
+  prometheus:
+    enabled: false
+    endpoint: /metrics
+
+sentry:
+  dsn: ""
+  environment: ""
+
+logging:
+  file:
+    path: ./logs/
+  level:
+    root: INFO
+    lavalink: INFO
+  request:
+    enabled: true
+    includeClientInfo: true
+    includeHeaders: false
+    includeQueryString: true
+    includePayload: true
+    maxPayloadLength: 10000
+  logback:
+    rollingpolicy:
+      max-file-size: 1GB
+      max-history: 30

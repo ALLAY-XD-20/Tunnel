@@ -1,0 +1,43 @@
+# Keep this code repo PRIVATE. On every tag it builds the jar and publishes it to a separate
+# PUBLIC repo that only holds releases (no source). Tunnel's auto-update reads that repo.
+#
+# Setup (once):
+#   1. Create an empty public repo, e.g. pawan/tunnel-releases
+#   2. In THIS repo: Settings > Secrets > Actions > add RELEASES_TOKEN (a token that can create releases there)
+#   3. In THIS repo: Settings > Variables > Actions > add RELEASES_REPO = pawan/tunnel-releases
+name: Release
+on:
+  push:
+    tags: ["*"]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.10.2
+
+      - name: Build
+        run: gradle clean releaseZip
+        env:
+          VERSION: ${{ github.ref_name }}
+
+      - name: Publish to the public releases repo
+        env:
+          GH_TOKEN: ${{ secrets.RELEASES_TOKEN }}
+        run: |
+          V="${GITHUB_REF_NAME#v}"
+          gh release create "$GITHUB_REF_NAME" \
+            "build/libs/tunnel-${V}.jar" \
+            "build/release/Tunnel-${V}-release.zip" \
+            --repo "${{ vars.RELEASES_REPO }}" \
+            --title "Tunnel ${V}" \
+            --notes "Tunnel ${V}. Download the release zip for a first install; running servers update themselves."
