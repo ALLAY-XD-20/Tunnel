@@ -12,9 +12,8 @@ object TunnelDefaults {
     const val PREFIX = "tunnel:"
 
     fun nodes(): List<NodeConfig> = listOf(
-        node("node-1", "lava1.example.com", 2333, "change-me-1", secure = false, priority = 10),
-        node("node-2", "lava2.example.com", 2333, "change-me-2", secure = false, priority = 5),
-        node("node-3", "lava3.example.com", 443, "change-me-3", secure = true, priority = 1)
+        node("node-1", "echo.rozhost.in", 2333, "Lyrixa", secure = false, priority = 10),
+        node("node-2", "echo.rozhost.in", 4002, "Lyrixa", secure = false, priority = 5)
     )
 
     private fun node(
