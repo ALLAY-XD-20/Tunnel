@@ -1,0 +1,131 @@
+# ==========================================================================
+#  exp.yml - full example application.yml for Lavalink + Tunnel 1.0.0
+#  (tunnel-1.0.0.jar in the plugins/ folder)           Tunnel by Pawan
+#
+#  Copy this file to your Lavalink folder as application.yml, then change:
+#    - lavalink.server.password
+#    - the nodes (or edit TunnelDefaults.kt before building)
+#    - autoUpdate owner / repo (your GitHub username and your public releases repo)
+# ==========================================================================
+
+server:
+  port: 2333
+  address: 0.0.0.0
+  http2:
+    enabled: false
+
+# ---------------------------------------------------------------- Tunnel settings
+plugins:
+  tunnel:
+    useDefaultNodes: true          # keep the nodes built into the plugin (TunnelDefaults.kt)
+    refreshSeconds: 60             # how often provider lists and health are re-fetched from every node
+    requestTimeoutSeconds: 15
+    searchResults: 5               # how many search results are resolved
+    maxPlaylistTracks: 100
+    fallbackSearch: "ytsearch:"    # used if a track URL can't be played here. "" turns it off
+
+    # Extra nodes. Same name as a default node = override that node.
+    nodes:
+      - name: my-node-1
+        host: lava.example.com
+        port: 2333
+        password: "youshallnotpass"
+        secure: false              # true if the node is behind https
+        priority: 5                # higher = tried first
+        enabled: true
+
+    # Advanced Search Driver (plain-text searches, ISRC codes)
+    asd:
+      enabled: true
+      mode: merge                  # merge = search several providers at once, first = stop at the first hit
+      sources: [ytsearch, scsearch, spsearch, dzsearch, amsearch, ytmsearch]
+      maxProviders: 3
+      minScore: 0.2
+      timeoutSeconds: 20
+
+    # Auto-update: checks the latest release of owner/repo, downloads the new jar, deletes the old one
+    autoUpdate:
+      enabled: true
+      source: github               # github = jar attached to a release (closed-source friendly), jitpack = built by JitPack
+      owner: pawan                 # your GitHub username
+      repo: tunnel-releases        # the PUBLIC repo that holds only releases (github) / the code repo (jitpack)
+      artifact: ""                 # jar name prefix, empty = "tunnel"
+      checkIntervalMinutes: 60
+      deleteOldVersions: true      # delete old Tunnel jars after an update
+      pluginsDir: "./plugins"      # must match lavalink.pluginsDir below
+      configFile: "./application.yml"
+      updateConfigFile: true       # only used when Tunnel is listed under lavalink.plugins (JitPack install)
+      restartAfterUpdate: false    # true = Lavalink exits after an update (needs systemd/Docker/panel to start it again)
+      restartDelaySeconds: 60
+
+# ---------------------------------------------------------------- Lavalink
+lavalink:
+  # Tunnel 1.0.0 is installed by putting tunnel-1.0.0.jar into the plugins/ folder. Nothing to list here.
+  # Only if you install it from JitPack instead (autoUpdate.source: jitpack), list it like this:
+  # plugins:
+  #   - dependency: "com.github.pawan:tunnel:1.0.0"
+  #     repository: "https://jitpack.io"
+  # Add your other plugins (youtube-source, LavaSrc, ...) under "plugins:" the same way.
+  # Tunnel plays the final track URL on THIS server, so it needs the sources (like YouTube) itself.
+  pluginsDir: "./plugins"
+
+  server:
+    password: "youshallnotpass"
+    sources:
+      youtube: true                # set to false if you use the youtube-source plugin
+      bandcamp: true
+      soundcloud: true
+      twitch: true
+      vimeo: true
+      nico: true
+      http: true                   # warning: without a proxy this can expose your server's IP
+      local: false
+    filters:
+      volume: true
+      equalizer: true
+      karaoke: true
+      timescale: true
+      tremolo: true
+      vibrato: true
+      distortion: true
+      rotation: true
+      channelMix: true
+      lowPass: true
+    bufferDurationMs: 400
+    frameBufferDurationMs: 5000
+    opusEncodingQuality: 10
+    resamplingQuality: LOW
+    trackStuckThresholdMs: 10000
+    useSeekGhosting: true
+    youtubePlaylistLoadLimit: 6
+    playerUpdateInterval: 5
+    youtubeSearchEnabled: true
+    soundcloudSearchEnabled: true
+    gc-warnings: true
+
+metrics:
+  prometheus:
+    enabled: false
+    endpoint: /metrics
+
+sentry:
+  dsn: ""
+  environment: ""
+
+logging:
+  file:
+    path: ./logs/
+  level:
+    root: INFO
+    lavalink: INFO
+  request:
+    enabled: true
+    includeClientInfo: true
+    includeHeaders: false
+    includeQueryString: true
+    includePayload: true
+    maxPayloadLength: 10000
+  logback:
+    rollingpolicy:
+      max-file-size: 1GB
+      max-history: 30
