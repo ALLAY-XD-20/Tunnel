@@ -1,0 +1,6 @@
+Tunnel - Lavalink plugin
+Copyright (c) 2026 Pawan. All rights reserved.
+
+You may use this plugin on Lavalink servers you own or run.
+You may not redistribute, resell, sublicense, decompile or reverse engineer it.
+The software is provided "as is", without warranty of any kind.
